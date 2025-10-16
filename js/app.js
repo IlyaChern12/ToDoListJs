@@ -144,6 +144,31 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelBtn.addEventListener('click', e => { e.preventDefault(); renderList() })
   }
 
+  let dragSrcId = null
+  function attachDragHandlers(item){
+    item.setAttribute('draggable', 'true')
+    item.addEventListener('dragstart', e => {
+      dragSrcId = item.getAttribute('data-id')
+      e.dataTransfer.effectAllowed = 'move'
+      try{ e.dataTransfer.setData('text/plain', dragSrcId) } catch(err){}
+      item.classList.add('dragging')
+    })
+    item.addEventListener('dragend', () => { dragSrcId = null; item.classList.remove('dragging') })
+    item.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move' })
+    item.addEventListener('drop', e => {
+      e.preventDefault()
+      const dstId = item.getAttribute('data-id')
+      const srcId = dragSrcId || (e.dataTransfer.getData('text/plain') || '')
+      if(!srcId || srcId === dstId) return
+      const srcIndex = tasks.findIndex(t => t.id === srcId)
+      const dstIndex = tasks.findIndex(t => t.id === dstId)
+      if(srcIndex < 0 || dstIndex < 0) return
+      const [moved] = tasks.splice(srcIndex, 1)
+      tasks.splice(dstIndex, 0, moved)
+      save(); renderList()
+    })
+  }
+
   // создание листа задач
   function renderList(){
     while(list.firstChild) list.removeChild(list.firstChild)

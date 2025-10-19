@@ -77,17 +77,56 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnClearCompleted = el('button', {className:'btn secondary', text:'Очистить выполненные'})
   toolbar.appendChild(searchInput); toolbar.appendChild(filterSelect); toolbar.appendChild(btnSort); toolbar.appendChild(btnClearCompleted)
 
+  const counter = el('div', {className:'counter', text:'0 задач'});
+  counter.style.textAlign = 'right';
   const list = el('div', {className:'list', attrs:{id:'tasks-list'}})
   const empty = el('div', {className:'empty', text:'Задач нет. Добавьте первую задачу!'})
-  listCard.appendChild(toolbar); listCard.appendChild(list); listCard.appendChild(empty)
+  listCard.appendChild(toolbar);
+  listCard.appendChild(counter);
+  listCard.appendChild(list);
+  listCard.appendChild(empty);
 
   // инфа в подвале
   const footer = el('div', {className:'footer'})
-  const counter = el('div', {text:'0 задач'})
   const exportBtn = el('button', {className:'btn secondary', text:'Экспорт JSON'})
+  exportBtn.addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(tasks, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'tasks.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
   const importBtn = el('input', {className:'input', attrs:{type:'file', accept:'.json'}})
   importBtn.title = 'Импорт JSON-файла'
-  footer.appendChild(counter); footer.appendChild(exportBtn); footer.appendChild(importBtn)
+  importBtn.addEventListener('change', e => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        if (Array.isArray(parsed)) {
+          tasks = parsed.map(t => ({ id: t.id || uid(), title: String(t.title||''), date: t.date||'', done: !!t.done }));
+          save();
+          renderList();
+        } else {
+          alert('Неправильный формат файла');
+        }
+      } catch (err) {
+        alert('Ошибка при чтении файла');
+      }
+    };
+    reader.readAsText(file);
+    importBtn.value = '';
+  });
+  const importExportContainer = el('div', {className:'import-export'});
+  importExportContainer.appendChild(exportBtn);
+  importExportContainer.appendChild(importBtn);
+  footer.appendChild(importExportContainer);
 
   app.appendChild(header); app.appendChild(formCard); app.appendChild(listCard); app.appendChild(footer)
 

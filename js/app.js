@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
   filterSelect.addEventListener('change', () => { filterMode = filterSelect.value; renderList() })
   btnSort.addEventListener('click', e => { e.preventDefault(); sortAsc = !sortAsc; renderList() })
 
-  // Модальное окно для подтверждения удаления
+  // модальное окно для подтверждения удаления
   const modalOverlay = el('div', {className:'modal-overlay'});
   const modal = el('div', {className:'modal'});
   const modalText = el('div', {className:'modal-text', text:'Удалить все выполненные задачи?'});

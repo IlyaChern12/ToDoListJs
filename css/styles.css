@@ -1,3 +1,4 @@
+/* корневые переменные для цветов */
 :root {
   --bg: #e9eaed;
   --card: #ffffff;
@@ -6,10 +7,12 @@
   --success: #10b981;
 }
 
+/* обнуляем отступы и задаем box-sizing */
 * {
   box-sizing: border-box;
 }
 
+/* тело и фон */
 html, body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -23,12 +26,14 @@ body {
   padding: 10px 0;
 }
 
+/* контейнер приложения */
 .app {
   width: 95%;
   max-width: 900px;
   padding-bottom: 10px; /* пространство под футером */
 }
 
+/* шапка */
 .header {
   text-align: center;
   margin-top: 15px; /* увеличен отступ сверху */
@@ -52,6 +57,7 @@ body {
   vertical-align: middle;
 }
 
+/* карточки */
 .card {
   background-color: var(--card);
   border-radius: 8px;
@@ -60,6 +66,7 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+/* форма добавления задачи */
 .form {
   display: flex;
   gap: 8px;
@@ -76,6 +83,7 @@ body {
   min-width: 140px;
 }
 
+/* кнопки */
 .btn {
   background-color: var(--accent);
   color: #fff;
@@ -95,6 +103,7 @@ body {
   color: #333;
 }
 
+/* тулбар с фильтрами и поиском */
 .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -102,6 +111,7 @@ body {
   margin-bottom: 14px;
 }
 
+/* список задач */
 .list {
   display: flex;
   flex-direction: column;
@@ -134,6 +144,7 @@ body {
   font-size: 0.9em;
 }
 
+/* чекбоксы для задач */
 .checkbox {
   width: 18px;
   height: 18px;
@@ -148,6 +159,7 @@ body {
   color: var(--accent); /* синий цвет галочки */
 }
 
+/* действия над задачей */
 .task-actions {
   display: flex;
   gap: 6px;
@@ -166,18 +178,21 @@ body {
   background-color: #333;
 }
 
+/* индикатор перетаскивания */
 .drag-handle {
   cursor: grab;
   color: #666;
   padding: 0 6px;
 }
 
+/* пустой список */
 .empty {
   text-align: center;
   padding: 40px;
   color: var(--muted);
 }
 
+/* футер */
 .footer {
   text-align: center;
   color: var(--muted);
@@ -190,6 +205,7 @@ body {
   margin: 0 8px;
 }
 
+/* адаптивность */
 @media (max-width: 640px) {
   .form {
     flex-direction: column;
@@ -201,6 +217,7 @@ body {
     align-items: stretch;
   }
 }
+/* контейнер импорта и экспорта */
 .import-export {
   display: flex;
   justify-content: space-between;
@@ -239,6 +256,7 @@ body {
   box-sizing: border-box;
 }
 
+/* кнопки очистки и экспорта */
 .btn-clear-completed,
 .btn-export {
   border: none;
@@ -277,7 +295,7 @@ body {
   }
 }
 
-/* Модальное окно */
+/* модальное окно */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -309,6 +327,7 @@ body {
   color: #222;
 }
 
+/* кнопки в модалке */
 .modal-buttons {
   display: flex;
   justify-content: center;
@@ -357,13 +376,13 @@ body {
   background-color: #aaa;
 }
 
-/* Анимация появления */
+/* анимация появления модалки */
 @keyframes modalFadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Стили для редактирования задачи */
+/* редактирование задачи */
 .task-title.editing {
   display: flex;
   flex-wrap: wrap;

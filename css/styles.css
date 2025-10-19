@@ -138,12 +138,14 @@ body {
   width: 18px;
   height: 18px;
   border-radius: 4px;
-  border: 1px solid #666;
+  border: 2px solid var(--accent); /* синий бордер */
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  background-color: #1e1e1e;
+  background-color: #fff; /* белый фон */
+  font-weight: bold;
+  color: var(--accent); /* синий цвет галочки */
 }
 
 .task-actions {
@@ -202,18 +204,43 @@ body {
 .import-export {
   display: flex;
   justify-content: space-between;
-  gap: 0;
-  margin-bottom: 8px; /* уменьшен нижний отступ */
+  gap: 8px; /* небольшой промежуток между кнопками */
+  margin-bottom: 8px;
+  flex-wrap: wrap; /* чтобы кнопки переносились на новую строку при узком экране */
 }
 
 .import-export .btn,
 .import-export .input[type="file"] {
-  flex: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: var(--card);
+  color: #222;
+  cursor: pointer;
+  box-sizing: border-box;
+  height: 36px; /* фиксированная высота для одинакового размера */
+  display: inline-flex;
+  align-items: center; /* выравнивание по вертикали */
+  justify-content: center; /* выравнивание по горизонтали */
 }
+
+.import-export .input[type="file"] {
+  flex: none; /* убираем растягивание */
+  padding: 8px 14px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center; /* вертикальное выравнивание текста */
+  justify-content: center; /* горизонтальное выравнивание текста */
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: var(--card);
+  color: #222;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
 .btn-clear-completed,
 .btn-export {
-  background-color: var(--accent);
-  color: #fff;
   border: none;
   border-radius: 6px;
   padding: 8px 14px;
@@ -221,7 +248,111 @@ body {
   transition: 0.2s;
 }
 
-.btn-clear-completed:hover,
-.btn-export:hover {
+.btn-clear-completed {
+  background-color: var(--accent);
+  color: #fff;
+}
+
+.btn-clear-completed:hover {
   background-color: #357ab8;
+}
+
+.btn-export {
+  background-color: #ccc; /* серый */
+  color: #333;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-export:hover {
+  background-color: #aaa;
+}
+
+@media (max-width: 400px) {
+  .import-export .input[type="file"] {
+    padding: 6px 10px;
+    font-size: 0.66em;
+  }
+}
+
+/* Модальное окно */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: var(--card);
+  border-radius: 8px;
+  padding: 20px 24px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  text-align: center;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+.modal h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 18px;
+  color: #222;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.modal-buttons .btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  flex: 1;
+  max-width: 140px;
+}
+
+.modal-buttons .btn.confirm {
+  background-color: var(--accent);
+  color: #fff;
+  border: none;
+}
+
+.modal-buttons .btn.confirm:hover {
+  background-color: #357ab8;
+}
+
+.modal-text {
+  margin-bottom: 12px; 
+  font-size: 16px;
+  color: #222;
+}
+
+.modal-buttons .btn.cancel {
+  background-color: #ccc;
+  color: #333;
+  border: none;
+}
+
+.modal-buttons .btn.cancel:hover {
+  background-color: #aaa;
+}
+
+/* Анимация появления */
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

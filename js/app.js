@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // инфа в подвале
   const footer = el('div', {className:'footer'})
-  const exportBtn = el('button', {className:'btn secondary', text:'Экспорт JSON'})
+  const exportBtn = el('button', {className:'btn-export', text:'Экспорт JSON'})
   exportBtn.addEventListener('click', () => {
     const blob = new Blob([JSON.stringify(tasks, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -135,7 +135,35 @@ document.addEventListener('DOMContentLoaded', () => {
   searchInput.addEventListener('input', () => { searchQuery = searchInput.value.trim().toLowerCase(); renderList() })
   filterSelect.addEventListener('change', () => { filterMode = filterSelect.value; renderList() })
   btnSort.addEventListener('click', e => { e.preventDefault(); sortAsc = !sortAsc; renderList() })
-  btnClearCompleted.addEventListener('click', e => { e.preventDefault(); clearCompleted() })
+
+  // Модальное окно для подтверждения удаления
+  const modalOverlay = el('div', {className:'modal-overlay'});
+  const modal = el('div', {className:'modal'});
+  const modalText = el('div', {className:'modal-text', text:'Удалить все выполненные задачи?'});
+  const modalBtns = el('div', {className:'modal-buttons'});
+  const modalYes = el('button', {className:'btn', text:'Да'});
+  const modalNo = el('button', {className:'btn secondary', text:'Нет'});
+  modalBtns.appendChild(modalYes); modalBtns.appendChild(modalNo);
+  modal.appendChild(modalText); modal.appendChild(modalBtns);
+  modalOverlay.appendChild(modal);
+  document.body.appendChild(modalOverlay);
+  modalOverlay.style.display = 'none';
+
+  btnClearCompleted.addEventListener('click', e => {
+    e.preventDefault();
+    modalOverlay.style.display = 'flex';
+  });
+
+  modalNo.addEventListener('click', () => {
+    modalOverlay.style.display = 'none';
+  });
+
+  modalYes.addEventListener('click', () => {
+    tasks = tasks.filter(t => !t.done);
+    save();
+    renderList();
+    modalOverlay.style.display = 'none';
+  });
 
   function handleAdd(){
     const title = inputTitle.value.trim()

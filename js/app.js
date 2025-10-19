@@ -113,6 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
           tasks = parsed.map(t => ({ id: t.id || uid(), title: String(t.title||''), date: t.date||'', done: !!t.done }));
           save();
           renderList();
+          location.reload();
         } else {
           alert('Неправильный формат файла');
         }
@@ -187,14 +188,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const item = list.querySelector(`[data-id="${id}"]`)
     if(!item) return
     const titleWrap = item.querySelector('.task-title')
+    titleWrap.classList.add('editing') // класс для редактирования
     while(titleWrap.firstChild) titleWrap.removeChild(titleWrap.firstChild)
 
     const inTitle = el('input', {className:'input', attrs:{type:'text'}})
     inTitle.value = t.title
     const inDate = el('input', {className:'input', attrs:{type:'date'}})
     inDate.value = t.date || ''
-    const saveBtn = el('button', {className:'btn', text:'Сохранить'})
-    const cancelBtn = el('button', {className:'btn secondary', text:'Отмена'})
+    const saveBtn = el('button', {className:'btn edit-save', text:'Сохранить'})
+    const cancelBtn = el('button', {className:'btn secondary edit-cancel', text:'Отмена'})
 
     titleWrap.appendChild(inTitle); titleWrap.appendChild(inDate); titleWrap.appendChild(saveBtn); titleWrap.appendChild(cancelBtn)
 
@@ -236,6 +238,44 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
+  // функция модального подтверждения
+  function confirmModal(message) {
+    return new Promise((resolve) => {
+      const modalOverlay = el('div', {className: 'modal-overlay'})
+      const modal = el('div', {className: 'modal'})
+      const msg = el('div', {className: 'modal-message', text: message})
+      const btnYes = el('button', {className: 'btn', text: 'Да'})
+      const btnNo = el('button', {className: 'btn secondary', text: 'Нет'})
+
+      modal.appendChild(msg)
+      const buttons = el('div', {className: 'modal-buttons'})
+      buttons.appendChild(btnYes)
+      buttons.appendChild(btnNo)
+      modal.appendChild(buttons)
+      modalOverlay.appendChild(modal)
+      document.body.appendChild(modalOverlay)
+
+      function cleanup() {
+        btnYes.removeEventListener('click', onYes)
+        btnNo.removeEventListener('click', onNo)
+        document.body.removeChild(modalOverlay)
+      }
+
+      function onYes() {
+        cleanup()
+        resolve(true)
+      }
+
+      function onNo() {
+        cleanup()
+        resolve(false)
+      }
+
+      btnYes.addEventListener('click', onYes)
+      btnNo.addEventListener('click', onNo)
+    })
+  }
+
   // создание листа задач
   function renderList(){
     while(list.firstChild) list.removeChild(list.firstChild)
@@ -270,7 +310,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const btnEdit = el('button',{className:'icon-btn', text:'✎'}); btnEdit.title='Редактировать'
       btnEdit.addEventListener('click', e=>{ e.preventDefault(); startEdit(t.id) })
       const btnDel = el('button',{className:'icon-btn', text:'🗑'}); btnDel.title='Удалить'
-      btnDel.addEventListener('click', e=>{ e.preventDefault(); if(confirm('Удалить задачу?')) removeTask(t.id) })
+      btnDel.addEventListener('click', async e=>{
+        e.preventDefault();
+        const confirmed = await confirmModal('Удалить задачу?');
+        if (confirmed) removeTask(t.id);
+      })
       if(t.done) item.classList.add('done')
       item.appendChild(drag); item.appendChild(chk); item.appendChild(titleWrap); item.appendChild(actions)
       actions.appendChild(btnEdit); actions.appendChild(btnDel)

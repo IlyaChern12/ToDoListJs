@@ -335,6 +335,12 @@ body {
   background-color: #357ab8;
 }
 
+.modal-message {
+  margin-bottom: 12px; 
+  font-size: 16px;
+  color: #222;
+}
+
 .modal-text {
   margin-bottom: 12px; 
   font-size: 16px;
@@ -355,4 +361,29 @@ body {
 @keyframes modalFadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Стили для редактирования задачи */
+.task-title.editing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px; /* отступ между элементами */
+}
+.task-title.editing .input[type="text"],
+.task-title.editing .input[type="date"],
+.task-title.editing .btn,
+.task-title.editing .btn.secondary {
+  height: 27px; /* одинаковая высота */
+  padding: 0 5px; /* отступ слева и справа */
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 0 4px 0;
+}
+
+.task-title.editing .btn.secondary {
+  background-color: --muted; /* изменённый серый фон */
+  color: #222; /* цвет текста */
 }

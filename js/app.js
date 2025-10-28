@@ -136,7 +136,13 @@ let manualOrder = false
   form.addEventListener('submit', e => { e.preventDefault(); handleAdd() })
   searchInput.addEventListener('input', () => { searchQuery = searchInput.value.trim().toLowerCase(); renderList() })
   filterSelect.addEventListener('change', () => { filterMode = filterSelect.value; renderList() })
-  btnSort.addEventListener('click', e => { e.preventDefault(); manualOrder = false; sortAsc = !sortAsc; renderList() })
+  btnSort.addEventListener('click', e => { 
+    e.preventDefault(); 
+    manualOrder = false; 
+    sortAsc = !sortAsc; 
+    renderList(); 
+    setTimeout(() => { manualOrder = true }, 200); 
+  })
 
   // модальное окно для подтверждения удаления
   const modalOverlay = el('div', {className:'modal-overlay'});

@@ -29,10 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8) }
 
-  let tasks = []
-  let sortAsc = true
-  let filterMode = 'all'
-  let searchQuery = ''
+let tasks = []
+let sortAsc = true
+let filterMode = 'all'
+let searchQuery = ''
+let manualOrder = false
 
   // сохранение в json
   function save(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)) } catch(e){ console.warn('Saving failed', e) } }
@@ -135,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', e => { e.preventDefault(); handleAdd() })
   searchInput.addEventListener('input', () => { searchQuery = searchInput.value.trim().toLowerCase(); renderList() })
   filterSelect.addEventListener('change', () => { filterMode = filterSelect.value; renderList() })
-  btnSort.addEventListener('click', e => { e.preventDefault(); sortAsc = !sortAsc; renderList() })
+  btnSort.addEventListener('click', e => { e.preventDefault(); manualOrder = false; sortAsc = !sortAsc; renderList() })
 
   // модальное окно для подтверждения удаления
   const modalOverlay = el('div', {className:'modal-overlay'});
@@ -234,6 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if(srcIndex < 0 || dstIndex < 0) return
       const [moved] = tasks.splice(srcIndex, 1)
       tasks.splice(dstIndex, 0, moved)
+      manualOrder = true
       save(); renderList()
     })
   }
@@ -287,11 +289,13 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     if(searchQuery) shown = shown.filter(t => t.title.toLowerCase().includes(searchQuery))
 
-    shown.sort((a,b) => {
-      const ad = a.date || '9999-12-31'
-      const bd = b.date || '9999-12-31'
-      return ad === bd ? 0 : sortAsc ? (ad < bd ? -1 : 1) : (ad < bd ? 1 : -1)
-    })
+    if (!manualOrder) {
+      shown.sort((a,b) => {
+        const ad = a.date || '9999-12-31'
+        const bd = b.date || '9999-12-31'
+        return ad === bd ? 0 : sortAsc ? (ad < bd ? -1 : 1) : (ad < bd ? 1 : -1)
+      })
+    }
 
     empty.style.display = shown.length === 0 ? 'block' : 'none'
 
